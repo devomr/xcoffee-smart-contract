@@ -1,0 +1,89 @@
+{
+    "buildInfo": {
+        "rustc": {
+            "version": "1.75.0-nightly",
+            "commitHash": "2e5a9dd6c9eaa42f0684b4b760bd68fc27cbe51b",
+            "commitDate": "2023-10-02",
+            "channel": "Nightly",
+            "short": "rustc 1.75.0-nightly (2e5a9dd6c 2023-10-02)"
+        },
+        "contractCrate": {
+            "name": "xcoffee",
+            "version": "0.0.0"
+        },
+        "framework": {
+            "name": "multiversx-sc",
+            "version": "0.43.4"
+        }
+    },
+    "name": "Xcoffee",
+    "constructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "endpoints": [
+        {
+            "name": "donate",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "EGLD"
+            ],
+            "inputs": [
+                {
+                    "name": "to",
+                    "type": "Address"
+                },
+                {
+                    "name": "name",
+                    "type": "bytes"
+                },
+                {
+                    "name": "message",
+                    "type": "bytes"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "getDonations",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "creator",
+                    "type": "Address"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "variadic<Donation>",
+                    "multi_result": true
+                }
+            ]
+        }
+    ],
+    "events": [],
+    "hasCallback": false,
+    "types": {
+        "Donation": {
+            "type": "struct",
+            "fields": [
+                {
+                    "name": "sender",
+                    "type": "Address"
+                },
+                {
+                    "name": "name",
+                    "type": "bytes"
+                },
+                {
+                    "name": "message",
+                    "type": "bytes"
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                }
+            ]
+        }
+    }
+}
