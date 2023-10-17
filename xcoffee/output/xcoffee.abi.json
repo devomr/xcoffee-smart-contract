@@ -23,6 +23,18 @@
     },
     "endpoints": [
         {
+            "docs": [
+                "Nothing to do yet when the smart contract is deployed",
+                "Endpoint that is called to perform a donation.",
+                "It will create a new donation and will send the EGLD amount to the receiver",
+                "",
+                "Arguments:",
+                "",
+                "* to - Wallet address who is receiving the donation",
+                "* name - A string that represents the name of the sender",
+                "* message - A string that represents a message from sender",
+                ""
+            ],
             "name": "donate",
             "mutability": "mutable",
             "payableInTokens": [
@@ -43,47 +55,9 @@
                 }
             ],
             "outputs": []
-        },
-        {
-            "name": "getDonations",
-            "mutability": "readonly",
-            "inputs": [
-                {
-                    "name": "creator",
-                    "type": "Address"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "variadic<Donation>",
-                    "multi_result": true
-                }
-            ]
         }
     ],
     "events": [],
     "hasCallback": false,
-    "types": {
-        "Donation": {
-            "type": "struct",
-            "fields": [
-                {
-                    "name": "sender",
-                    "type": "Address"
-                },
-                {
-                    "name": "name",
-                    "type": "bytes"
-                },
-                {
-                    "name": "message",
-                    "type": "bytes"
-                },
-                {
-                    "name": "amount",
-                    "type": "BigUint"
-                }
-            ]
-        }
-    }
+    "types": {}
 }

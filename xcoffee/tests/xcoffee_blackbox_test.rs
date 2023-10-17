@@ -1,7 +1,7 @@
-use multiversx_sc::{storage::mappers::SingleValueMapper, types::ManagedAddress};
-use multiversx_sc_scenario::{api::StaticApi, num_bigint::BigUint, scenario_model::*, *};
+use multiversx_sc_scenario::{api::StaticApi, scenario_model::*, *};
 use xcoffee::*;
 
+// Path the the output WASM file
 const XCOFFEE_PATH_EXPR: &str = "file:output/xcoffee.wasm";
 
 fn world() -> ScenarioWorld {
@@ -18,8 +18,6 @@ fn xcoffee_blackbox_test() {
 
     let owner_address = "address:owner";
     let creator_address = "address:creator";
-    let first_supporter_address = "address:firstsupporter";
-    let second_supporter_address = "address:secondsupporter";
 
     let callee_user_address = AddressValue::from(creator_address).to_address();
 

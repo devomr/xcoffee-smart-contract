@@ -1,39 +1,27 @@
 #![no_std]
 
+mod donation;
+mod donation_factory;
+mod storage;
+
 multiversx_sc::imports!();
 multiversx_sc::derive_imports!();
 
-#[derive(NestedDecode, NestedEncode, TopDecode, TopEncode, TypeAbi)]
-pub struct Donation<M: ManagedTypeApi> {
-    sender: ManagedAddress<M>,
-    name: ManagedBuffer<M>,
-    message: ManagedBuffer<M>,
-    amount: BigUint<M>,
-}
-
 #[multiversx_sc::contract]
-pub trait Xcoffee {
+pub trait Xcoffee: donation_factory::DonationFactory + storage::StorageModule {
     #[init]
     fn init(&self) {}
+    /// Nothing to do yet when the smart contract is deployed
 
-    fn create_donation(
-        &self,
-        receiver: ManagedAddress,
-        sender: ManagedAddress,
-        name: ManagedBuffer,
-        message: ManagedBuffer,
-        amount: BigUint,
-    ) {
-        let new_donation = Donation {
-            sender,
-            name,
-            message,
-            amount,
-        };
-
-        self.donations(&receiver).insert(new_donation);
-    }
-
+    /// Endpoint that is called to perform a donation.
+    /// It will create a new donation and will send the EGLD amount to the receiver
+    ///
+    /// Arguments:
+    ///
+    /// * to - Wallet address who is receiving the donation
+    /// * name - A string that represents the name of the sender
+    /// * message - A string that represents a message from sender
+    ///
     #[endpoint]
     #[payable("EGLD")]
     fn donate(&self, to: &ManagedAddress, name: ManagedBuffer, message: ManagedBuffer) {
@@ -51,8 +39,4 @@ pub trait Xcoffee {
         );
         self.send().direct_egld(&to, &donation_amount)
     }
-
-    #[view(getDonations)]
-    #[storage_mapper("donations")]
-    fn donations(&self, creator: &ManagedAddress) -> SetMapper<Donation<Self::Api>>;
 }
