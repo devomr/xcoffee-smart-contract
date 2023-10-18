@@ -16,15 +16,23 @@
             "version": "0.43.4"
         }
     },
+    "docs": [
+        "A contract that allows creators to:",
+        "* receive donations in EGLD from another users",
+        "* have membership subscription plans that the users can choose to subscribe by paying a fix amount of EGLD",
+        ""
+    ],
     "name": "Xcoffee",
     "constructor": {
+        "docs": [
+            "Nothing to do yet when the smart contract is deployed"
+        ],
         "inputs": [],
         "outputs": []
     },
     "endpoints": [
         {
             "docs": [
-                "Nothing to do yet when the smart contract is deployed",
                 "Endpoint that is called to perform a donation.",
                 "It will create a new donation and will send the EGLD amount to the receiver",
                 "",
@@ -55,9 +63,253 @@
                 }
             ],
             "outputs": []
+        },
+        {
+            "docs": [
+                "Endpoint that is called to create an user subscription.",
+                "It will calculate the subscription deadline, will create a new subscription",
+                "and will send the EGLD amount to the creator",
+                "",
+                "Arguments:",
+                "",
+                "* creator - Wallet address of creator",
+                "* plan - A string that represents the subscription plan",
+                "* duration_in_seconds - Subscription duration in seconds",
+                ""
+            ],
+            "name": "create_user_subscription",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "EGLD"
+            ],
+            "inputs": [
+                {
+                    "name": "creator",
+                    "type": "Address"
+                },
+                {
+                    "name": "plan",
+                    "type": "bytes"
+                },
+                {
+                    "name": "duration_in_seconds",
+                    "type": "u64"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Endpoint that is called to renew an existing subscription.",
+                "It will calculate the new subscription deadline and it will update the existing subscription.",
+                "",
+                "This operation can be performed only by the user who created the subscription.",
+                "",
+                "Arguments:",
+                "",
+                "* subscription_id - Subscription id",
+                "* duration_in_seconds - Subscription duration in seconds",
+                ""
+            ],
+            "name": "renew_subscription",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "EGLD"
+            ],
+            "inputs": [
+                {
+                    "name": "subscription_id",
+                    "type": "u32"
+                },
+                {
+                    "name": "duration_in_seconds",
+                    "type": "u64"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "docs": [
+                "Endpoint that is called to cancel an existing subscription.",
+                "It will update the subscription deadline to the block timestamp.",
+                "",
+                "This operation can be performed only by the user who created the subscription.",
+                "",
+                "Arguments:",
+                "",
+                "* subscription_id - Subscription id",
+                "* duration_in_seconds - Subscription duration in seconds",
+                ""
+            ],
+            "name": "cancel_subscription",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "subscription_id",
+                    "type": "u32"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "getUserSubscriptionDeadline",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "user_addres",
+                    "type": "Address"
+                },
+                {
+                    "name": "creator_address",
+                    "type": "Address"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "optional<u64>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Storage mapper used to store the subscription's count",
+                ""
+            ],
+            "name": "subscriptions_count",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "u32"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Storage mapper used to store all existing subscriptions",
+                "",
+                "Arguments:",
+                "",
+                "* id - Subscription id",
+                ""
+            ],
+            "name": "subscriptions",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "id",
+                    "type": "u32"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "Subscription"
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Storage mapper used to store the subscriptions id that an user has",
+                "",
+                "Arguments:",
+                "",
+                "* user - Wallet address of the user",
+                ""
+            ],
+            "name": "user_subscriptions",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "user",
+                    "type": "Address"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "variadic<u32>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Storage mapper used to store the creator subscriptions id",
+                "",
+                "Arguments:",
+                "",
+                "* creator - Wallet address of the creator",
+                ""
+            ],
+            "name": "creator_subscriptions",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "creator",
+                    "type": "Address"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "variadic<u32>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "docs": [
+                "Storage mapper used to store the user address which belongs to a subscription id",
+                "",
+                "Arguments:",
+                "",
+                "* id - Subscription id",
+                ""
+            ],
+            "name": "subscription_user",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "id",
+                    "type": "u32"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "Address"
+                }
+            ]
         }
     ],
     "events": [],
     "hasCallback": false,
-    "types": {}
+    "types": {
+        "Subscription": {
+            "type": "struct",
+            "docs": [
+                "Subscription struct"
+            ],
+            "fields": [
+                {
+                    "name": "creator",
+                    "type": "Address"
+                },
+                {
+                    "name": "subscriber",
+                    "type": "Address"
+                },
+                {
+                    "name": "deadline",
+                    "type": "u64"
+                },
+                {
+                    "name": "plan",
+                    "type": "bytes"
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                }
+            ]
+        }
+    }
 }

@@ -2,7 +2,7 @@ use crate::{donation::Donation, storage};
 
 multiversx_sc::imports!();
 
-#[multiversx_sc::contract]
+#[multiversx_sc::module]
 pub trait DonationFactory: storage::StorageModule {
     /// Function that creates a donation and insert it in the storage mapper
     ///
