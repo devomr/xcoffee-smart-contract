@@ -40,16 +40,6 @@ pub trait StorageModule {
     #[storage_mapper("user_subscriptions")]
     fn user_subscriptions(&self, user: &ManagedAddress) -> UnorderedSetMapper<usize>;
 
-    /// Storage mapper used to store the creator subscriptions id
-    ///
-    /// Arguments:
-    ///
-    /// * creator - Wallet address of the creator
-    ///
-    #[view]
-    #[storage_mapper("creator_subscriptions")]
-    fn creator_subscriptions(&self, creator: &ManagedAddress) -> UnorderedSetMapper<usize>;
-
     /// Storage mapper used to store the user address which belongs to a subscription id
     ///
     /// Arguments:

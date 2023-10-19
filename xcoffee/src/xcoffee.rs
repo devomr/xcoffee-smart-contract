@@ -21,9 +21,11 @@ pub trait Xcoffee:
     + subscription_helper::SubscriptionHelper
     + storage::StorageModule
 {
-    /// Nothing to do yet when the smart contract is deployed
     #[init]
-    fn init(&self) {}
+    fn init(&self) {
+        // Start subscription count from 1
+        self.subscriptions_count().set(1);
+    }
 
     /// Endpoint that is called to perform a donation.
     /// It will create a new donation and will send the EGLD amount to the receiver
@@ -141,21 +143,35 @@ pub trait Xcoffee:
     #[endpoint]
     fn cancel_subscription(&self, subscription_id: usize) {
         let caller = self.blockchain().get_caller();
-        let block_timestamp = self.blockchain().get_block_timestamp();
 
         // Validate if the subscription belongs to the caller
         self.check_subscription_belongs_to_caller(subscription_id, &caller);
 
-        // Update the subscription with the new deadline
-        self.update_subscription_deadline(subscription_id, block_timestamp);
+        // Remove the subscription from the user subscriptions storage mapper TOFIX
+        let mut subscriptions = self.user_subscriptions(&caller);
+        subscriptions.swap_remove(&subscription_id);
+
+        // Remove the subscription assigned for the user address from storage mapper
+        self.subscription_user(&subscription_id).clear();
+
+        // Remove the subscription from the list of available subscriptions from storage mapper
+        self.subscriptions(&subscription_id).clear();
     }
 
+    /// View that checkes if an user has an active subscription linked to a creator
+    /// wallet address and returns the user subscription deadline and the subscription id if found, otherwise None
+    ///
+    /// Arguments:
+    ///
+    /// * user_address - Wallet address of user
+    /// * creator_address -  Wallet address of creator
+    ///
     #[view(getUserSubscriptionDeadline)]
     fn get_user_subscription_deadline(
         &self,
         user_addres: &ManagedAddress,
         creator_address: &ManagedAddress,
-    ) -> OptionalValue<u64> {
+    ) -> (usize, u64) {
         let current_timestamp = self.blockchain().get_block_timestamp();
         let user_subscription_ids = self.user_subscriptions(user_addres);
 
@@ -165,10 +181,9 @@ pub trait Xcoffee:
 
             if &subscription.creator == creator_address {
                 let time_left = subscription.deadline - current_timestamp;
-                return OptionalValue::Some(time_left);
+                return (subscription_id, time_left);
             }
         }
-
-        return OptionalValue::None;
+        return (0, 0);
     }
 }

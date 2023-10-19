@@ -24,9 +24,6 @@
     ],
     "name": "Xcoffee",
     "constructor": {
-        "docs": [
-            "Nothing to do yet when the smart contract is deployed"
-        ],
         "inputs": [],
         "outputs": []
     },
@@ -152,6 +149,16 @@
             "outputs": []
         },
         {
+            "docs": [
+                "View that checkes if an user has an active subscription linked to a creator",
+                "wallet address and returns the user subscription deadline and the subscription id if found, otherwise None",
+                "",
+                "Arguments:",
+                "",
+                "* user_address - Wallet address of user",
+                "* creator_address -  Wallet address of creator",
+                ""
+            ],
             "name": "getUserSubscriptionDeadline",
             "mutability": "readonly",
             "inputs": [
@@ -166,8 +173,7 @@
             ],
             "outputs": [
                 {
-                    "type": "optional<u64>",
-                    "multi_result": true
+                    "type": "tuple<u32,u64>"
                 }
             ]
         },
@@ -222,30 +228,6 @@
             "inputs": [
                 {
                     "name": "user",
-                    "type": "Address"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "variadic<u32>",
-                    "multi_result": true
-                }
-            ]
-        },
-        {
-            "docs": [
-                "Storage mapper used to store the creator subscriptions id",
-                "",
-                "Arguments:",
-                "",
-                "* creator - Wallet address of the creator",
-                ""
-            ],
-            "name": "creator_subscriptions",
-            "mutability": "readonly",
-            "inputs": [
-                {
-                    "name": "creator",
                     "type": "Address"
                 }
             ],

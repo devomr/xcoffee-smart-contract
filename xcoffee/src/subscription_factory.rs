@@ -24,7 +24,6 @@ pub trait SubscriptionFactory: storage::StorageModule {
     ) {
         self.subscriptions_count().update(|id| {
             self.user_subscriptions(&subscriber).insert(*id);
-            self.creator_subscriptions(&creator).insert(*id);
             self.subscription_user(id).set(&subscriber);
 
             let new_subscription = Subscription {
@@ -45,7 +44,7 @@ pub trait SubscriptionFactory: storage::StorageModule {
     /// Arguments:
     ///
     /// * subscription_id - Subscription id
-    /// * deadline - Subscription deadline
+    /// * deadline - Subscription new deadline
     ///
     fn update_subscription_deadline(&self, subscription_id: usize, deadline: u64) {
         self.subscriptions(&subscription_id)
